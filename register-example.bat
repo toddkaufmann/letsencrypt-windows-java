@@ -1,3 +1,5 @@
+@rem TODO:
+@rem PATH:  java 8, openssl, jar
 
 @rem Configure variables here,
 @rem then call main script
