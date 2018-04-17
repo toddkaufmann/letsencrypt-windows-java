@@ -19,7 +19,7 @@ set LE=\Users\todd\LE
 @rem set tc_static=C:\apache-tomcat-7\webapps\static
 @rem  .. aka webapps\ROOT ?
 @rem  .. check your server.xml file
-set well_known_acme=%tc_static\.well-known\acme-challenge
+set well_known_acme=%tc_static%\.well-known\acme-challenge
 @rem /var/www/.well-known/acme-challenge
 
 @rem certs will go here:
@@ -128,6 +128,19 @@ if exist %authorize% (
 )
 echo 06- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
 
+
+@rem try a test ?
+@rem find /c "error" file
+findstr /R status.:.error %authorize%
+if %errorlevel% equ 1 goto notfound
+echo see that ERRROR ?: 
+type %authorize%
+del  %authorize%
+exit /B 6
+
+:notfound
+
+
 set loglevel=DEBUG
 
 @rem 7 verify challenge
@@ -147,7 +160,7 @@ echo 07- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
 @rem 8 gen cert & d/l
 if exist %got_certs% (
     @echo 08. already got certs
-    ) else (
+) else (
     java -jar acme_client.jar --command generate-certificate ^
       -a %acct_key%  -w %workdir% ^
       --csr %dom_csr% --cert-dir %cert_dir% > %got_certs% ^
@@ -155,7 +168,7 @@ if exist %got_certs% (
     echo 08-  errorlevel is %errorlevel% / %ERRORLEVEL%      
     type %got_certs%
     %pause%
-}
+)
 echo 08- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%      
 
 @rem have 3 .pem files now?
