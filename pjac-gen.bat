@@ -35,9 +35,9 @@ set openssl_cnf=openssl.cnf
 @rem various outputs .. if they exist, that step is skipped
 
 set acct_key=%LE%\01-acct.key
-set dom_priv_key=%LE%\02-hh.key
+set dom_priv_key=%LE%\02-%domain%.key
 @rem I skipped step 3
-set dom_csr=%LE%\04-hh.csr
+set dom_csr=%LE%\04-%domain%.csr
 set registered=%LE%\05-registered.txt
 set authorize=%LE%\06-authorize.txt
 set verify=%LE%\07-verify.txt
@@ -85,7 +85,7 @@ if exist %dom_csr% (
 ) else (
  @echo on
     openssl req -config %openssl_cnf%  -new -key %dom_priv_key% ^
-  -sha256 -nodes -subj "/C=US/ST=Pennsylvania/L=Pittsburgh/O=HH/OU=net.dept/CN=%domain%/emailAddress=%email%" ^
+  -sha256 -nodes -subj %SUBJECT% ^
   -outform PEM -out %dom_csr%
  @echo off
 %pause%
@@ -172,7 +172,7 @@ if exist %got_certs% (
 echo 08- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%      
 
 @rem have 3 .pem files now?
-dir %cert_dir
+dir %cert_dir%
 
 %pause%
 
