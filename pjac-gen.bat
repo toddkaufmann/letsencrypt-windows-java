@@ -59,11 +59,11 @@ if exist %acct_key% (
     @echo 01. got acct_key
 ) else (
     openssl genrsa -out %acct_key% 2048
-    echo errorlevel is %errorlevel% / %ERRORLEVEL%
+    echo errorlevel is %errorlevel%
     %pause%
 )
 
-echo afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
+echo afterif: errorlevel is %errorlevel%
 
 
 @rem 2 # private domain key
@@ -100,11 +100,11 @@ if exist %registered% (
 ) else (
     java -jar acme_client.jar --log-dir %logdir% --command register -a %acct_key% ^
       --with-agreement-update --email %email% > %registered%
-    echo 05- errorlevel is %errorlevel% / %ERRORLEVEL%
+    echo 05- errorlevel is %errorlevel%
     type %registered%
     %pause%
 )
-echo 05- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
+echo 05- afterif: errorlevel is %errorlevel%
 
 
 set loglevel=INFO
@@ -122,11 +122,11 @@ if exist %authorize% (
       --one-dir-for-well-known ^
       --log-dir %logdir%  --log-level %loglevel%  > %authorize%
 
-    echo 06-  errorlevel is %errorlevel% / %ERRORLEVEL%
+    echo 06-  errorlevel is %errorlevel%
     type %authorize%
     %pause%
 )
-echo 06- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
+echo 06- afterif: errorlevel is %errorlevel%
 
 
 @rem try a test ?
@@ -151,11 +151,11 @@ if exist %verify% (
 ) else (
     java -jar acme_client.jar --command verify-domains -a %acct_key% ^
       -w %workdir% -d %domain% > %verify%  --log-dir %logdir% --log-level  %loglevel% 
-    echo 07- errorlevel is %errorlevel% / %ERRORLEVEL%
+    echo 07- errorlevel is %errorlevel%
     type %verify%
     %pause%
 )
-echo 07- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
+echo 07- afterif: errorlevel is %errorlevel%
 
 @rem 8 gen cert & d/l
 if exist %got_certs% (
@@ -165,11 +165,11 @@ if exist %got_certs% (
       -a %acct_key%  -w %workdir% ^
       --csr %dom_csr% --cert-dir %cert_dir% > %got_certs% ^
       --log-dir %logdir% --log-level INFO
-    echo 08-  errorlevel is %errorlevel% / %ERRORLEVEL%      
+    echo 08-  errorlevel is %errorlevel%      
     type %got_certs%
     %pause%
 )
-echo 08- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%      
+echo 08- afterif: errorlevel is %errorlevel%      
 
 @rem have 3 .pem files now?
 dir %cert_dir%
