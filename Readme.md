@@ -1,15 +1,17 @@
 
-== Windows bat script to automate letsencrypt
+## Windows bat script to automate letsencrypt
 
+Because it is harder than necessary for Windows,
+I wrote a script to hopefully make it easier.
 
-=== Files here:
+### Files here:
 
 * register-example.bat  -- the file you copy and configure with your domain, environment etc.
 * pjac-gen.bat          -- generate certs
 * certs-to-p12.bat      -- convert .pem to .p12 keystore, usable by tomcat
 * Readme.md             -- this Readme file, may contain errors.
 
-=== Requirements:
+### Requirements:
 
  - acme_client.jar (aka 'pjac')
  - jre 8 (whatever pjac needs)
@@ -18,18 +20,16 @@
 JRE 8 (or later) .. it is sufficient to download & extra the .tar.gz file
 and then add bin to your path, if you already have [a different] java set up for tomcat.
 
-'pjac' ==
-Porunov Java ACME Client application (https://github.com/porunov/acme_client)
+'pjac' == Porunov Java ACME Client application (https://github.com/porunov/acme_client)
 (it is sufficient to download the .jar file)
 
-
-Signed OpenSSL binaries at
+Signed OpenSSL binaries for Windows are at
 https://www.magsys.co.uk/delphi/magics.asp
 (or pick another from https://wiki.openssl.org/index.php/Binaries, or build your own).
 
-=== Instructions
+### Instructions
 
-==== Overview
+#### Overview
 0.  Prep:  have requirements, edit config, make folders
 1.  Run register-mydomain.bat
 2.  Convert certs-to-p12
@@ -37,7 +37,7 @@ https://www.magsys.co.uk/delphi/magics.asp
 4.  Test it
 5.  Renew as necessary, every 2-3 months.
 
-==== 0.  Prep
+#### 0.  Prep
 
     copy register-example.bat register-mydomain.bat
 
@@ -58,7 +58,7 @@ Then under this, `mkdir .well-known\acme-challenge`.
 
 I think it needs to be on port 80.
 
-==== 1.  run register-mydomain.bat
+#### 1.  run register-mydomain.bat
 
 After you configured `register-mydomain.bat` (or whatever you called it)
 with proper settings,
@@ -68,7 +68,7 @@ This follows the directions at
 https://github.com/porunov/acme_client/wiki/Get-a-certificate-for-multiple-domains
 (except we're really only doing one domain, but you could edit it).
 
-==== 2.  Convert certs-to-p12
+#### 2.  Convert certs-to-p12
 
     copy certs-to-p12.bat certs-to-p12-mydomain.bat
 
@@ -82,14 +82,14 @@ Run this script, and if it goes well you should then have
 If this file exists, the script will do nothing
 (delete if you want to re-create).
 
-==== 3.  Edit your server config
+#### 3.  Edit your server config
 
 Here, we'll do tomcat.
 
 Assumes you don't have https: already set up for tomcat
 (so no existing keystore to worry about etc).
 
-There will be an SSL connector commented out;
+There will be an SSL connector in your `server.xml` file commented out;
 
     <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
@@ -106,63 +106,52 @@ Replace Pass here with what you set `EXP_PW` to in your script.
 
 Stop and restart server, look for errors.
 
-==== 4.  Test it
+##### Force http: to redirect to https:
+
+See
+
+
+#### 4.  Test it
 
 Use your browser; many browser, multiple devices..
 
 The online test at https://www.ssllabs.com/ is good.
 
-==== 5.  Renew as necessary
+#### 5.  Renew as necessary
 
 LetsEncrypt certificates are only good for 90 days, so you'll need to renew.
 
 Luckily, that part should be fairly easy now
 (instructions to come).
 
-==================================================================
 
-Convert to pkcs12 (aka .p12) and use that directly
+## troubleshooting
 
-Steps:
+### General:
 
-Download this directory
+probably turn echo on at appropriate place(s) in the script.
 
-Make a copy of this script, and configure for your domain/email/etc.
-
-    copy register-example-com.bat register-MY-DOMAIN.bat
-
-You can have multiple.
-Currently best to have separate LetsEncrypt folders for each.
-
-modify to your values
-
-execute it, it will call main script
-
-== Use with tomcat
-
-This uses HTTP01 challenge; ie, it puts some files
-in .well-known/acme-challenge directory
-and then LE expects to find them there
-
-1. set tc_static to 'docroot' folder
-    (actually can be any server, doesn't need to be tomcat)
-2. well_known_acme is probably ok..
-
-== troubleshooting
-
-=== General:
-
-probably turn echo on
 set pause=pause (if its not)
 
+increase loglevel, check the log file.  Not all steps have it yet (I didn't need it).
 
-=== messages:
+Messages like
 
     2018-04-17 03:09:21 ERROR com.jblur.acme_client.Parameters:281 - Your authorization uri list file doesn't exists. Seems that it is either wrong working directory or you haven't authorized your domains yet: \Users\todd\LE\workdir\authorization_uri_list
 
-check & make sure dir exists !
+Are probably right; check & make sure dir exists !
 
+## Contribute!
 
-increase loglevel
+Let me know if this script works for you.
+If not, checkout the community at 
+https://community.letsencrypt.org/
 
+I don't normally use Windows, so my bat script writing is not good.
 
+One step has actual error handling (or detection).
+
+It would be nice if it were as nice as certbot on Linux
+(prompt for values, save them, etc.).
+
+Still, it's not too painful.
