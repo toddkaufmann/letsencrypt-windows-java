@@ -9,8 +9,10 @@ set LE=\Users\todd\LE
 set EXP_PW=todaysExport417
 
 @rem contains 3 .pem files:  cert, chain, fullchain
+@rem You don't need to change this
 set cert_dir=%LE%\certdir
 
+@rem more notes here:
 
 @rem http://robblake.net/post/18945733710/using-a-pem-private-key-and-ssl-certificate-with
 @rem 1 openssl .pem -> .p12
