@@ -177,12 +177,4 @@ dir %cert_dir
 %pause%
 
 @rem conversion time 
-
-@rem http://robblake.net/post/18945733710/using-a-pem-private-key-and-ssl-certificate-with
-@rem 1 openssl .pem -> .p12
-
-@rem 2 import w/ keytool
-@rem 3 intermediate keys?  or is fullchain good ?
-@rem 4 move keystore to tomcat
-@rem 5 configure tomcat
-@rem 6 restart, test tomcat
+@rem if you need it
