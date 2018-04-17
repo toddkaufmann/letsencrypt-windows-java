@@ -22,6 +22,8 @@ set LE=\Users\todd\LE
 set well_known_acme=%tc_static\.well-known\acme-challenge
 @rem /var/www/.well-known/acme-challenge
 
+@rem certs will go here:
+set cert_dir=%LE%\certdir
 
 set logdir=%LE%\log
 set workdir=%LE%\workdir
@@ -37,8 +39,9 @@ set dom_priv_key=%LE%\02-hh.key
 @rem I skipped step 3
 set dom_csr=%LE%\04-hh.csr
 set registered=%LE%\05-registered.txt
-set challenge=%LE%\06-challenge.txt
+set authorize=%LE%\06-authorize.txt
 set verify=%LE%\07-verify.txt
+set got_certs=%LE%\08-got_certs.txt
 
 
 @rem .. between steps:
@@ -103,26 +106,29 @@ if exist %registered% (
 )
 echo 05- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
 
-%pause%
 
+set loglevel=INFO
+set loglevel=DEBUG
 
 @rem 6 get challenge / dl
 @rem
 @rem if multiple were speicied in 4, then could specify here; eg
 @rem     -d www.example.com -d admin.example.com -d www.admin.example.com
-if exist %challenge% (
-   @echo 06. got challenge
+if exist %authorize% (
+   @echo 06. got authorize
 ) else (
     java -jar acme_client.jar --command authorize-domains -a %acct_key% ^
       -w %workdir% -d %domain% --well-known-dir %well_known_acme% ^
-      --one-dir-for-well-known > %challenge%
+      --one-dir-for-well-known ^
+      --log-dir %logdir%  --log-level %loglevel%  > %authorize%
+
     echo 06-  errorlevel is %errorlevel% / %ERRORLEVEL%
-    type %challenge%
+    type %authorize%
     %pause%
 )
 echo 06- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
 
-
+set loglevel=DEBUG
 
 @rem 7 verify challenge
 @rem  .. likewise, can be: -d www.example.com -d admin.example.com -d www.admin.example.com
@@ -131,19 +137,29 @@ if exist %verify% (
    @echo 07. got  verified
 ) else (
     java -jar acme_client.jar --command verify-domains -a %acct_key% ^
-      -w %workdir% -d %domain% > %verify%
+      -w %workdir% -d %domain% > %verify%  --log-dir %logdir% --log-level  %loglevel% 
     echo 07- errorlevel is %errorlevel% / %ERRORLEVEL%
     type %verify%
     %pause%
 )
 echo 07- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%
 
-%pause%
 @rem 8 gen cert & d/l
-
-%pause%
+if exist %got_certs% (
+    @echo 08. already got certs
+    ) else (
+    java -jar acme_client.jar --command generate-certificate ^
+      -a %acct_key%  -w %workdir% ^
+      --csr %dom_csr% --cert-dir %cert_dir% > %got_certs% ^
+      --log-dir %logdir% --log-level INFO
+    echo 08-  errorlevel is %errorlevel% / %ERRORLEVEL%      
+    type %got_certs%
+    %pause%
+}
+echo 08- afterif: errorlevel is %errorlevel% / %ERRORLEVEL%      
 
 @rem have 3 .pem files now?
+dir %cert_dir
 
 %pause%
 
