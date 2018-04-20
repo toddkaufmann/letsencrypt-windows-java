@@ -106,9 +106,12 @@ Replace Pass here with what you set `EXP_PW` to in your script.
 
 Stop and restart server, look for errors.
 
-##### Force http: to redirect to https:
+##### Force all http: to redirect to https:
 
-See
+A little snippet to add to your web.xml;
+See e.g. https://gist.github.com/jtgasper3/10501274
+
+(will that cause issues with .well-known ?)
 
 
 #### 4.  Test it
