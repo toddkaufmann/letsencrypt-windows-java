@@ -68,6 +68,9 @@ This follows the directions at
 https://github.com/porunov/acme_client/wiki/Get-a-certificate-for-multiple-domains
 (except we're really only doing one domain, but you could edit it).
 
+Actually, I tried once with two names--domain and www.domain--but it didn't work.. but I probably missed something.  The file openssl.cnf.multi-altnames was used
+(copy to openssl.cnf and edit the names, if you decide to try).
+
 #### 2.  Convert certs-to-p12
 
     copy certs-to-p12.bat certs-to-p12-mydomain.bat
