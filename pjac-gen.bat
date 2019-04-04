@@ -150,7 +150,8 @@ if exist %verify% (
    @echo 07. got  verified
 ) else (
     java -jar acme_client.jar --command verify-domains -a %acct_key% ^
-      -w %workdir% -d %domain% > %verify%  --log-dir %logdir% --log-level  %loglevel% 
+     --log-dir %logdir% --log-level  %loglevel% ^
+      -w %workdir% -d %domain% > %verify% 
     echo 07- errorlevel is %errorlevel%
     type %verify%
     %pause%
